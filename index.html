@@ -30,6 +30,24 @@
       font-size: 1.5rem;
       color: #999;
     }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: #e2e2e2;
+      padding: 1rem;
+    }
+    nav button {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #2a8b8b;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    nav button:hover {
+      background: #1c6e6e;
+    }
     .catalogue {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -42,6 +60,11 @@
       border-radius: 8px;
       text-align: center;
       background: #fafafa;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .book:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     }
     .book img {
       max-width: 100%;
@@ -102,6 +125,14 @@
     <span class="arabic">العلم نور</span>
   </header>
 
+  <nav>
+    <button onclick="filterBooks('all')">Tous</button>
+    <button onclick="filterBooks('coran')">Coran</button>
+    <button onclick="filterBooks('mariage')">Mariage</button>
+    <button onclick="filterBooks('science')">Science</button>
+    <button onclick="filterBooks('hadiths')">Hadiths</button>
+  </nav>
+
   <section class="catalogue" id="catalogue">
     <!-- Books will be added here -->
   </section>
@@ -115,12 +146,12 @@
 
   <script>
     const books = [
-      { title: "Tafsir Ibn Kathir", price: 25, desc: "Commentaire du Coran par Ibn Kathir.", img: "https://via.placeholder.com/200x180" },
-      { title: "Les 40 Hadiths Nawawi", price: 12, desc: "Hadiths fondamentaux de l'islam.", img: "https://via.placeholder.com/200x180" },
-      { title: "Le Mariage en Islam", price: 15, desc: "Guide complet sur le mariage islamique.", img: "https://via.placeholder.com/200x180" },
-      { title: "Comprendre la Science islamique", price: 20, desc: "Introduction aux sciences islamiques.", img: "https://via.placeholder.com/200x180" },
-      { title: "Fiqh du Mariage", price: 18, desc: "Règles juridiques liées au mariage.", img: "https://via.placeholder.com/200x180" },
-      { title: "Coran avec traduction", price: 10, desc: "Le Saint Coran en arabe et français.", img: "https://via.placeholder.com/200x180" },
+      { title: "Tafsir Ibn Kathir", price: 25, desc: "Commentaire du Coran par Ibn Kathir.", img: "https://via.placeholder.com/200x180", category: "coran" },
+      { title: "Les 40 Hadiths Nawawi", price: 12, desc: "Hadiths fondamentaux de l'islam.", img: "https://via.placeholder.com/200x180", category: "hadiths" },
+      { title: "Le Mariage en Islam", price: 15, desc: "Guide complet sur le mariage islamique.", img: "https://via.placeholder.com/200x180", category: "mariage" },
+      { title: "Comprendre la Science islamique", price: 20, desc: "Introduction aux sciences islamiques.", img: "https://via.placeholder.com/200x180", category: "science" },
+      { title: "Fiqh du Mariage", price: 18, desc: "Règles juridiques liées au mariage.", img: "https://via.placeholder.com/200x180", category: "mariage" },
+      { title: "Coran avec traduction", price: 10, desc: "Le Saint Coran en arabe et français.", img: "https://via.placeholder.com/200x180", category: "coran" },
     ];
 
     const catalogue = document.getElementById("catalogue");
@@ -128,19 +159,21 @@
     const cartTotal = document.getElementById("cart-total");
     const cart = [];
 
-    function renderBooks() {
-      books.forEach((book, index) => {
-        const bookEl = document.createElement("div");
-        bookEl.className = "book";
-        bookEl.innerHTML = `
-          <img src="${book.img}" alt="${book.title}" />
-          <h3>${book.title}</h3>
-          <p>${book.desc}</p>
-          <p><strong>${book.price} €</strong></p>
-          <button onclick="addToCart(${index})">Ajouter au panier</button>
-        `;
-        catalogue.appendChild(bookEl);
-      });
+    function renderBooks(filter = 'all') {
+      catalogue.innerHTML = "";
+      books.filter(book => filter === 'all' || book.category === filter)
+        .forEach((book, index) => {
+          const bookEl = document.createElement("div");
+          bookEl.className = "book";
+          bookEl.innerHTML = `
+            <img src="${book.img}" alt="${book.title}" />
+            <h3>${book.title}</h3>
+            <p>${book.desc}</p>
+            <p><strong>${book.price} €</strong></p>
+            <button onclick="addToCart(${index})">Ajouter au panier</button>
+          `;
+          catalogue.appendChild(bookEl);
+        });
     }
 
     function addToCart(index) {
@@ -162,6 +195,10 @@
 
     function submitOrder() {
       alert("Merci pour votre commande ! (Formulaire à ajouter ici)");
+    }
+
+    function filterBooks(category) {
+      renderBooks(category);
     }
 
     renderBooks();
