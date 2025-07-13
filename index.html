@@ -127,7 +127,16 @@
   </section>
 
   <script>
-    const books = JSON.parse(localStorage.getItem('allBooks') || '[]');
+    const books = [
+      { title: "Coran Livre 1", price: 17.94, desc: "Un ouvrage précieux du Saint Coran.", img: "https://source.unsplash.com/featured/?quran,book,1", category: "coran" },
+      { title: "Mariage Islamique 1", price: 14.29, desc: "Conseils et enseignements sur le mariage en Islam.", img: "https://source.unsplash.com/featured/?marriage,islam,1", category: "mariage" },
+      { title: "Science Islamique 1", price: 25.30, desc: "Exploration des sciences dans la tradition musulmane.", img: "https://source.unsplash.com/featured/?science,islam,1", category: "science" },
+      { title: "Hadith Authentique 1", price: 12.95, desc: "Collection de hadiths authentiques.", img: "https://source.unsplash.com/featured/?hadith,book,1", category: "hadiths" },
+      { title: "Coran Livre 2", price: 15.87, desc: "Un ouvrage précieux du Saint Coran.", img: "https://source.unsplash.com/featured/?quran,book,2", category: "coran" },
+      { title: "Mariage Islamique 2", price: 18.00, desc: "Conseils et enseignements sur le mariage en Islam.", img: "https://source.unsplash.com/featured/?marriage,islam,2", category: "mariage" },
+      { title: "Science Islamique 2", price: 21.42, desc: "Exploration des sciences dans la tradition musulmane.", img: "https://source.unsplash.com/featured/?science,islam,2", category: "science" },
+      { title: "Hadith Authentique 2", price: 10.30, desc: "Collection de hadiths authentiques.", img: "https://source.unsplash.com/featured/?hadith,book,2", category: "hadiths" }
+    ];
 
     const catalogue = document.getElementById("catalogue");
 
@@ -159,17 +168,7 @@
       renderBooks(category);
     }
 
-    // Charger les livres au premier chargement si pas déjà fait
-    if (books.length === 0) {
-      fetch('books-data.json')
-        .then(response => response.json())
-        .then(data => {
-          localStorage.setItem('allBooks', JSON.stringify(data));
-          location.reload();
-        });
-    } else {
-      renderBooks();
-    }
+    renderBooks();
   </script>
 </body>
 </html>
