@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panier – Maktaba</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fefefe;
+      color: #333;
+    }
+    header {
+      padding: 1.5rem;
+      text-align: center;
+      background: #f7f7f7;
+      border-bottom: 1px solid #ddd;
+    }
+    header h1 {
+      margin: 0;
+    }
+    .panier {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid #ddd;
+      padding: 1rem 0;
+    }
+    .item img {
+      width: 100px;
+      height: 140px;
+      object-fit: cover;
+    }
+    .item-info {
+      flex-grow: 1;
+    }
+    .item-info h3 {
+      margin: 0 0 0.5rem;
+    }
+    .total {
+      text-align: right;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 2rem;
+      text-decoration: none;
+      background: #2a8b8b;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+    }
+    .back:hover {
+      background: #1c6e6e;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Votre panier</h1>
+  </header>
+
+  <div class="panier" id="panier"></div>
+  <div class="panier total" id="total"></div>
+  <div class="panier">
+    <a href="index.html" class="back">← Retour à la boutique</a>
+  </div>
+
+  <script>
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const panier = document.getElementById('panier');
+    const totalEl = document.getElementById('total');
+    let total = 0;
+
+    if (cart.length === 0) {
+      panier.innerHTML = '<p>Votre panier est vide.</p>';
+      totalEl.textContent = '';
+    } else {
+      cart.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.title}" />
+          <div class="item-info">
+            <h3>${item.title}</h3>
+            <p>${item.price} €</p>
+          </div>
+        `;
+        total += item.price;
+        panier.appendChild(div);
+      });
+      totalEl.textContent = `Total : ${total.toFixed(2)} €`;
+    }
+  </script>
+</body>
+</html>
