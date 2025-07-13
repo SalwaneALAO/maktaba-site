@@ -20,6 +20,7 @@
       padding: 1.5rem;
       text-align: center;
       border-bottom: 1px solid #eee;
+      position: relative;
     }
     header h1 {
       font-size: 2rem;
@@ -29,6 +30,15 @@
       display: block;
       font-size: 1.5rem;
       color: #999;
+    }
+    .cart-icon {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+    }
+    .cart-icon img {
+      width: 32px;
+      cursor: pointer;
     }
     nav {
       display: flex;
@@ -91,38 +101,17 @@
     .book button:hover {
       background: #1c6e6e;
     }
-    .cart {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 1rem;
-      border-radius: 8px;
-      width: 300px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    .cart h2 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-    }
-    .cart ul {
-      list-style: none;
-    }
-    .cart li {
-      margin-bottom: 0.5rem;
-      font-size: 0.95rem;
-    }
-    .cart button {
-      margin-top: 1rem;
-      background: #e69826;
-    }
   </style>
 </head>
 <body>
   <header>
     <h1>Maktaba</h1>
     <span class="arabic">العلم نور</span>
+    <div class="cart-icon">
+      <a href="panier.html">
+        <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Panier">
+      </a>
+    </div>
   </header>
 
   <nav>
@@ -134,66 +123,13 @@
   </nav>
 
   <section class="catalogue" id="catalogue">
-    <!-- Books will be added here -->
+    <!-- Les livres seront insérés ici dynamiquement -->
   </section>
 
-  <div class="cart" id="cart">
-    <h2>Votre panier</h2>
-    <ul id="cart-items"></ul>
-    <p>Total : <span id="cart-total">0</span> €</p>
-    <button onclick="submitOrder()">Commander</button>
-  </div>
-
   <script>
-    const books = [
-  {
-    title: "Tafsir Ibn Kathir",
-    price: 25,
-    desc: "Commentaire du Coran par Ibn Kathir.",
-    img: "https://www.librairie-sana.com/14321-large_default/l-authentique-de-l-ex%C3%A9g%C3%A8se-d-ibn-kathir-sahih-tafsir-ibn-kathir-en-5-volumes-%C3%A9ditions-tawbah-couverture-noir.webp",
-    category: "coran"
-  },
-  {
-    title: "Les 40 Hadiths Nawawi",
-    price: 12,
-    desc: "Hadiths fondamentaux de l'islam.",
-    img: "https://img.freepik.com/free-photo/islamic-book-holy-quran_1150-20029.jpg",
-    category: "hadiths"
-  },
-  {
-    title: "Le Mariage en Islam",
-    price: 15,
-    desc: "Guide complet sur le mariage islamique.",
-    img: "https://img.freepik.com/free-photo/islamic-marriage-concept_23-2150424030.jpg",
-    category: "mariage"
-  },
-  {
-    title: "Comprendre la Science islamique",
-    price: 20,
-    desc: "Introduction aux sciences islamiques.",
-    img: "https://img.freepik.com/free-photo/muslim-scientist-research-lab_23-2149264012.jpg",
-    category: "science"
-  },
-  {
-    title: "Fiqh du Mariage",
-    price: 18,
-    desc: "Règles juridiques liées au mariage.",
-    img: "https://img.freepik.com/free-photo/muslim-wedding-ceremony_23-2149172819.jpg",
-    category: "mariage"
-  },
-  {
-    title: "Coran avec traduction",
-    price: 10,
-    desc: "Le Saint Coran en arabe et français.",
-    img: "https://img.freepik.com/free-photo/quran-book-stand-dark_1150-20026.jpg",
-    category: "coran"
-  }
-];
+    const books = JSON.parse(localStorage.getItem('allBooks') || '[]');
 
     const catalogue = document.getElementById("catalogue");
-    const cartItems = document.getElementById("cart-items");
-    const cartTotal = document.getElementById("cart-total");
-    const cart = [];
 
     function renderBooks(filter = 'all') {
       catalogue.innerHTML = "";
@@ -213,31 +149,27 @@
     }
 
     function addToCart(index) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
       cart.push(books[index]);
-      updateCart();
-    }
-
-    function updateCart() {
-      cartItems.innerHTML = "";
-      let total = 0;
-      cart.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = `${item.title} - ${item.price} €`;
-        cartItems.appendChild(li);
-        total += item.price;
-      });
-      cartTotal.textContent = total.toFixed(2);
-    }
-
-    function submitOrder() {
-      alert("Merci pour votre commande ! (Formulaire à ajouter ici)");
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert("Livre ajouté au panier !");
     }
 
     function filterBooks(category) {
       renderBooks(category);
     }
 
-    renderBooks();
+    // Charger les livres au premier chargement si pas déjà fait
+    if (books.length === 0) {
+      fetch('books-data.json')
+        .then(response => response.json())
+        .then(data => {
+          localStorage.setItem('allBooks', JSON.stringify(data));
+          location.reload();
+        });
+    } else {
+      renderBooks();
+    }
   </script>
 </body>
 </html>
